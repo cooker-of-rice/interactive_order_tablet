@@ -1,0 +1,9 @@
+body{
+    background-color: #f000f0;
+}
+
+.selection{
+    display: grid;
+    grid-template-columns: auto;
+    grid-template-rows: auto;
+}
