@@ -1,5 +1,6 @@
 body{
     background-color: #f000f0;
+    display: flex;
 }
 
 .selection {
@@ -10,7 +11,7 @@ body{
   }
 
   .buttons{
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
+    margin:0 auto;
+    display:block;
+    text-align:center
   }
