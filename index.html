@@ -1,56 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>McDonald's Ordering App</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kiosk Order Interface</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="header">
-    <h1>McDonald's Menu</h1>
-    <nav>
-      <a href="#" id="view-cart">Cart (0)</a>
-    </nav>
-  </header>
-  
-  <main class="main-content">
-    <section id="menu" class="menu">
-      <h2>Menu</h2>
-      <div class="menu-items">
-        <!-- Example menu item -->
-        <div class="menu-item" data-id="1">
-          <img src="burger.jpg" alt="Burger">
-          <h3>Cheeseburger</h3>
-          <p>$5.99</p>
-          <button class="view-details">View Details</button>
+    <header>
+        <div class="header-image">
+            <img src="images/header.jpg" alt="Kiosk Header">
         </div>
-        <!-- Add more items here -->
-      </div>
-    </section>
-  </main>
+        <h1>All Time Favourites</h1>
+        <input type="text" id="search-bar" placeholder="Search">
+    </header>
 
-  <!-- Item Details Modal -->
-  <div id="item-modal" class="modal hidden">
-    <div class="modal-content">
-      <span class="close-btn">&times;</span>
-      <h2>Cheeseburger</h2>
-      <img src="burger.jpg" alt="Cheeseburger">
-      <p>$5.99</p>
-      <form id="customization-form">
-        <label for="extra-cheese">
-          <input type="checkbox" id="extra-cheese">
-          Extra Cheese
-        </label>
-        <label for="extra-pickles">
-          <input type="checkbox" id="extra-pickles">
-          Extra Pickles
-        </label>
-        <button type="button" id="add-to-cart">Add to Cart</button>
-      </form>
+    <div class="main-content">
+        <aside class="categories">
+            <ul>
+                <li><img src="images/category1.jpg" alt="Category 1"></li>
+                <li><img src="images/category2.jpg" alt="Category 2"></li>
+                <li><img src="images/category3.jpg" alt="Category 3"></li>
+                <!-- Add more categories -->
+            </ul>
+        </aside>
+
+        <section class="menu">
+            <div class="menu-items">
+                <div class="menu-item" data-name="McChicken" data-price="5.99">
+                    <img src="images/mcchicken.jpg" alt="McChicken">
+                    <h3>McChicken</h3>
+                    <p>RM 5.99</p>
+                </div>
+                <div class="menu-item" data-name="Filet-O-Fish" data-price="6.99">
+                    <img src="images/filet-o-fish.jpg" alt="Filet-O-Fish">
+                    <h3>Filet-O-Fish</h3>
+                    <p>RM 6.99</p>
+                </div>
+                <div class="menu-item" data-name="Cheeseburger" data-price="4.99">
+                    <img src="images/cheeseburger.jpg" alt="Cheeseburger">
+                    <h3>Cheeseburger</h3>
+                    <p>RM 4.99</p>
+                </div>
+                <!-- Add more items here -->
+            </div>
+        </section>
     </div>
-  </div>
 
-  <script src="script.js"></script>
+    <footer>
+        <button class="cancel-order">Cancel Order</button>
+    </footer>
+
+    <script src="script.js"></script>
 </body>
 </html>
