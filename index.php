@@ -33,7 +33,7 @@ $searchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search'])) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kiosk Order Interface</title>
     <link rel="stylesheet" href="styles/style.css">
-</head>
+    </head>
 <body>
     <header>
         <div class="header-image">
@@ -43,7 +43,7 @@ $searchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search'])) 
         <!-- Search Form -->
         <form method="GET" action="index.php">
             <input type="text" name="search" id="search-bar" placeholder="Search" value="<?php echo htmlspecialchars($searchQuery); ?>">
-            <button type="submit">Search</button>
+            <button type="submit" class="search-button">Search</button>
         </form>
     </header>
 
@@ -65,36 +65,34 @@ $searchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search'])) 
 
         <!-- Menu Items -->
         <section class="menu">
-    <form method="POST" action="checkout.php">
-        <div class="menu-items">
-            <?php if (!empty($menuItems)): ?>
-                <?php foreach ($menuItems as $index => $item): ?>
-                    <?php
-                    // Check if the search query matches the item name
-                    if ($searchQuery && strpos(strtolower($item['name']), strtolower($searchQuery)) === false) {
-                        continue; // Skip items that don't match the search query
-                    }
-                    ?>
-                    <!-- Each item is wrapped in a label to make it clickable -->
-                    <label class="menu-item">
-                        <!-- The actual checkbox is hidden -->
-                        <input type="checkbox" id="item-<?php echo $index; ?>" name="items[]" value="<?php echo $item['name']; ?>" hidden>
-                        <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>">
-                        <h3><?php echo $item['name']; ?></h3>
-                        <p>RM <?php echo $item['price']; ?></p>
-                    </label>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <p>No menu items available.</p>
-            <?php endif; ?>
-        </div>
-        <button type="submit" class="checkout-button">Proceed to Checkout</button>
-    </form>
-</section>
+            <div class="menu-items">
+                <?php if (!empty($menuItems)): ?>
+                    <?php foreach ($menuItems as $item): ?>
+                        <?php
+                        // Check if the search query matches the item name
+                        if ($searchQuery && strpos(strtolower($item['name']), strtolower($searchQuery)) === false) {
+                            continue; // Skip items that don't match the search query
+                        }
+                        ?>
+                        <!-- Menu Item with click event -->
+                        <div class="menu-item" data-name="<?php echo $item['name']; ?>" data-price="<?php echo $item['price']; ?>">
+                            <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>">
+                            <h3><?php echo $item['name']; ?></h3>
+                            <p>RM <?php echo $item['price']; ?></p>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <p>No menu items available.</p>
+                <?php endif; ?>
+            </div>
+        </section>
     </div>
 
     <footer>
         <button class="cancel-order">Cancel Order</button>
     </footer>
+
+    <script src="scripts/app.js"></script>
+</body>
 </body>
 </html>
