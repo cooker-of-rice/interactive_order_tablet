@@ -65,31 +65,32 @@ $searchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search'])) 
 
         <!-- Menu Items -->
         <section class="menu">
-            <form method="POST" action="checkout.php">
-                <div class="menu-items">
-                    <?php if (!empty($menuItems)): ?>
-                        <?php foreach ($menuItems as $item): ?>
-                            <?php
-                            // Check if the search query matches the item name
-                            if ($searchQuery && strpos(strtolower($item['name']), strtolower($searchQuery)) === false) {
-                                continue; // Skip items that don't match the search query
-                            }
-                            ?>
-                            <!-- Checkbox selection for items -->
-                            <div class="menu-item">
-                                <input type="checkbox" name="items[]" value="<?php echo $item['name']; ?>">
-                                <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>">
-                                <h3><?php echo $item['name']; ?></h3>
-                                <p>RM <?php echo $item['price']; ?></p>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else: ?>
-                        <p>No menu items available.</p>
-                    <?php endif; ?>
-                </div>
-                <button type="submit" class="checkout-button">Proceed to Checkout</button>
-            </form>
-        </section>
+    <form method="POST" action="checkout.php">
+        <div class="menu-items">
+            <?php if (!empty($menuItems)): ?>
+                <?php foreach ($menuItems as $index => $item): ?>
+                    <?php
+                    // Check if the search query matches the item name
+                    if ($searchQuery && strpos(strtolower($item['name']), strtolower($searchQuery)) === false) {
+                        continue; // Skip items that don't match the search query
+                    }
+                    ?>
+                    <!-- Each item is wrapped in a label to make it clickable -->
+                    <label for="item-<?php echo $index; ?>" class="menu-item">
+                        <!-- The actual checkbox is hidden -->
+                        <input type="checkbox" id="item-<?php echo $index; ?>" name="items[]" value="<?php echo $item['name']; ?>" hidden>
+                        <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>">
+                        <h3><?php echo $item['name']; ?></h3>
+                        <p>RM <?php echo $item['price']; ?></p>
+                    </label>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No menu items available.</p>
+            <?php endif; ?>
+        </div>
+        <button type="submit" class="checkout-button">Proceed to Checkout</button>
+    </form>
+</section>
     </div>
 
     <footer>
