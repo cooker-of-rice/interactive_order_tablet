@@ -76,7 +76,7 @@ $searchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search'])) 
                     }
                     ?>
                     <!-- Each item is wrapped in a label to make it clickable -->
-                    <label for="item-<?php echo $index; ?>" class="menu-item">
+                    <label class="menu-item">
                         <!-- The actual checkbox is hidden -->
                         <input type="checkbox" id="item-<?php echo $index; ?>" name="items[]" value="<?php echo $item['name']; ?>" hidden>
                         <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>">
