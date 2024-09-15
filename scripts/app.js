@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedItems.length > 0) {
             selectedItems.forEach(item => {
                 const li = document.createElement('li');
-                li.textContent = `${item.name} - RM ${item.price.toFixed(2)}`;
+                li.textContent = `${item.name} - € ${item.price.toFixed(2)}`;
                 orderSummaryList.appendChild(li);
             });
         } else {
@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     placeOrderButton.addEventListener('click', () => {
-        alert(`Order placed! Total amount: RM ${totalPrice.toFixed(2)}`);
+        alert(`Order placed! Total amount: € ${totalPrice.toFixed(2)}`);
         selectedItems = [];
         totalPrice = 0;
         updateOrderSummary();
