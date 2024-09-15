@@ -33,7 +33,7 @@ $searchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search'])) 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kiosk Order Interface</title>
     <link rel="stylesheet" href="styles/style.css">
-    </head>
+</head>
 <body>
     <header>
         <div class="header-image">
@@ -41,7 +41,7 @@ $searchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search'])) 
         </div>
         <h1>All Time Favourites</h1>
         <!-- Search Form -->
-        <form method="GET" action="index.php">
+        <form method="GET" action="index.php" class="search-form">
             <input type="text" name="search" id="search-bar" placeholder="Search" value="<?php echo htmlspecialchars($searchQuery); ?>">
             <button type="submit" class="search-button">Search</button>
         </form>
@@ -53,8 +53,9 @@ $searchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search'])) 
             <ul>
                 <?php if (!empty($categories)): ?>
                     <?php foreach ($categories as $category): ?>
-                        <li>
+                        <li class="category-item">
                             <img src="<?php echo $category['image']; ?>" alt="<?php echo $category['name']; ?>">
+                            <p><?php echo $category['name']; ?></p>
                         </li>
                     <?php endforeach; ?>
                 <?php else: ?>
@@ -86,6 +87,16 @@ $searchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search'])) 
                 <?php endif; ?>
             </div>
         </section>
+        
+        <!-- Order Summary Section -->
+        <aside class="order-summary">
+            <h2>Order Summary</h2>
+            <ul id="order-items-list">
+                <li>No items selected</li>
+            </ul>
+            <p class="total-amount">Total: RM <span id="total-price">0.00</span></p>
+            <button id="place-order" class="place-order" disabled>Place Order</button>
+        </aside>
     </div>
 
     <footer>
@@ -94,5 +105,5 @@ $searchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search'])) 
 
     <script src="scripts/app.js"></script>
 </body>
-</body>
 </html>
+
