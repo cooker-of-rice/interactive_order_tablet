@@ -18,14 +18,14 @@ if ($menuData === null) {
     die("Error: JSON data could not be decoded. Please check the JSON file format.");
 }
 
-// Extract categories and menu items from the decoded JSON data
+// json data
 $categories = isset($menuData['categories']) ? $menuData['categories'] : [];
 $menuItems = isset($menuData['menuItems']) ? $menuData['menuItems'] : [];
 
-// Process search query (via GET method) with a default value to avoid NULL
+// search query
 $searchQuery = isset($_GET['search']) ? htmlspecialchars(trim($_GET['search'])) : '';
 
-// Process selection of menu items (via POST method)
+// Process selection
 $selectedItem = isset($_POST['item_name']) ? $_POST['item_name'] : null;
 ?>
 
@@ -34,7 +34,7 @@ $selectedItem = isset($_POST['item_name']) ? $_POST['item_name'] : null;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Kiosk Order Interface</title>
+    <title>order66</title>
     <link rel="stylesheet" href="styles/style.css">
 </head>
 <body>
@@ -43,7 +43,6 @@ $selectedItem = isset($_POST['item_name']) ? $_POST['item_name'] : null;
             <img src="images/header.jpg" alt="Kiosk Header">
         </div>
         <h1>All Time Favourites</h1>
-        <!-- Search Form -->
         <form method="GET" action="index.php">
             <input type="text" name="search" id="search-bar" placeholder="Search" value="<?php echo htmlspecialchars($searchQuery); ?>">
             <button type="submit">Search</button>
@@ -51,7 +50,6 @@ $selectedItem = isset($_POST['item_name']) ? $_POST['item_name'] : null;
     </header>
 
     <div class="main-content">
-        <!-- Sidebar with Categories -->
         <aside class="categories">
             <ul>
                 <?php if (!empty($categories)): ?>
@@ -77,7 +75,6 @@ $selectedItem = isset($_POST['item_name']) ? $_POST['item_name'] : null;
                             continue; // Skip items that don't match the search query
                         }
                         ?>
-                        <!-- Form to select an item -->
                         <form method="POST" action="index.php">
                             <div class="menu-item">
                                 <img src="<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>">
