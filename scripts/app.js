@@ -28,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     function updateOrderSummary() {
-        orderSummaryList.innerHTML = ''; // Clear the current list
+        orderSummaryList.innerHTML = ''; // Clear  list
 
         if (selectedItems.length > 0) {
             selectedItems.forEach(item => {
