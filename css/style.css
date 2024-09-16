@@ -1,0 +1,51 @@
+body {
+  font-family: "Arial", sans-serif;
+  background-color: #fff;
+  color: #333;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  text-align: center;
+}
+.container h1 {
+  font-size: 3em;
+  margin-bottom: 0.5em;
+}
+.container .logo-placeholder {
+  margin: 20px;
+  width: 150px;
+  height: 150px;
+  background-color: #ddd;
+}
+.container .btn {
+  padding: 10px 20px;
+  background-color: #ccc;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+form label {
+  margin: 10px 0;
+  font-size: 1.2em;
+}
+form input, form select {
+  padding: 10px;
+  margin: 10px 0;
+  font-size: 1em;
+}
+form .btn {
+  margin-top: 20px;
+}/*# sourceMappingURL=style.css.map */
