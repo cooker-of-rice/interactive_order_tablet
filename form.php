@@ -16,9 +16,6 @@
         <p>we need some information</p>
 
         <form id="buildForm">
-            <label for="landSize">Size of the land:</label>
-            <input type="number" id="landSize" name="landSize" required> m²
-
             <label for="buildingType">Type of your building:</label>
             <select id="buildingType" name="buildingType" required>
                 <option value="glass">Glass</option>
