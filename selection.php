@@ -1,32 +1,14 @@
+
 <?php
-// Load the JSON data
+// Get the selected material
+$selectedMaterial = isset($_GET['material']) ? $_GET['material'] : 'glass';
+
+// Read the room data from the JSON
 $jsonData = file_get_contents('data/data.json');
 $data = json_decode($jsonData, true);
 
-// Set default selected material
-$selectedMaterial = 'glass'; // Default material
-
-// Handle form submission to get the selected material
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['material'])) {
-        $selectedMaterial = $_POST['material'];
-    }
-}
-
-// Get room data for the selected material
-$rooms = $data['materials'][$selectedMaterial]['rooms'];
-
-// Initialize total cost and selected floors array
-$totalCost = 0;
-$selectedRooms = [];
-
-// Handle room selections and cost calculation
-if (isset($_POST['rooms'])) {
-    $selectedRooms = $_POST['rooms'];
-    foreach ($selectedRooms as $floor => $room) {
-        $totalCost += $rooms[$room]['cost'];
-    }
-}
+// Get the rooms for the selected material
+$rooms = $data['materials'][$selectedMaterial];
 ?>
 
 <!DOCTYPE html>
@@ -34,64 +16,33 @@ if (isset($_POST['rooms'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Build Your House</title>
+    <title>Room Selection</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+    <div class="selection-page">
+        <div class="logo"></div>
+        <div class="floor-controls">
+            <button id="addFloorBtn" class="add-floor-btn">+ Floor</button>
+            <div id="floorList"></div>
+        </div>
 
-<!-- Material Selection Form -->
-<form method="post" action="">
-    <label for="materialSelect">Select Material:</label>
-    <select id="materialSelect" name="material" onchange="this.form.submit()">
-        <option value="glass" <?php echo $selectedMaterial == 'glass' ? 'selected' : ''; ?>>Glass</option>
-        <option value="steel" <?php echo $selectedMaterial == 'steel' ? 'selected' : ''; ?>>Steel</option>
-        <option value="concrete" <?php echo $selectedMaterial == 'concrete' ? 'selected' : ''; ?>>Concrete</option>
-        <option value="brick" <?php echo $selectedMaterial == 'brick' ? 'selected' : ''; ?>>Brick</option>
-        <option value="wooden" <?php echo $selectedMaterial == 'wooden' ? 'selected' : ''; ?>>Wooden</option>
-    </select>
-</form>
+        <div class="room-selection">
+            <?php foreach ($rooms as $room => $price): ?>
+                <button class="room-btn" data-room="<?= $room ?>" data-price="<?= $price ?>">
+                    <?= ucfirst($room) ?> (<?= $price ?>€)
+                </button>
+            <?php endforeach; ?>
+        </div>
 
-<!-- Room Selection and Floors -->
-<form method="post" action="">
-    <input type="hidden" name="material" value="<?php echo $selectedMaterial; ?>">
-    
-    <div id="floors">
-        <h2>Select Rooms for Each Floor</h2>
-
-        <?php
-        // Dynamically generate room options for each floor
-        for ($floor = 1; $floor <= 5; $floor++) {
-            echo "<div class='floor'>";
-            echo "<h3>Floor $floor</h3>";
-
-            echo "<select name='rooms[$floor]'>";
-            foreach ($rooms as $roomName => $roomData) {
-                $selected = (isset($selectedRooms[$floor]) && $selectedRooms[$floor] == $roomName) ? 'selected' : '';
-                echo "<option value='$roomName' $selected>{$roomName} ({$roomData['cost']}€)</option>";
-            }
-            echo "</select>";
-            echo "</div>";
-        }
-        ?>
+        <div class="summary">
+            <ul id="summaryList"></ul>
+            <p>Total: <span id="totalCost">0</span>€</p>
+            <button id="discardBtn">Discard Selection</button>
+            <a href="final.php?material=<?= $selectedMaterial ?>" class="build-btn">Build My House</a>
+        </div>
     </div>
 
-    <button type="submit">Calculate Total</button>
-</form>
-
-<!-- Summary of Costs -->
-<div id="summary">
-    <h2>Summary</h2>
-    <ul>
-        <?php
-        // Display selected rooms and costs
-        foreach ($selectedRooms as $floor => $room) {
-            echo "<li>Floor $floor: $room - {$rooms[$room]['cost']}€</li>";
-        }
-        ?>
-    </ul>
-
-    <h3>Total Cost: <?php echo $totalCost; ?>€</h3>
-</div>
-
+    <script src="js/script.js"></script>
 </body>
 </html>
