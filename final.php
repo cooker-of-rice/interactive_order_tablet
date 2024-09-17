@@ -1,3 +1,8 @@
+<!-- final.php -->
+<?php
+$selectedMaterial = isset($_GET['material']) ? $_GET['material'] : 'glass';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,18 +12,37 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <div class="container">
+    <div class="final-page">
         <h1>Your Tower</h1>
-        <div class="tower-display">
-            <div class="tower" id="towerImage"></div>
-            <div class="summary">
-                <h3>Summary</h3>
-                <ul id="finalSummaryList"></ul>
-                <p>Total: <span id="finalTotalCost">0</span>€</p>
-            </div>
+        <div class="tower">
+            <div class="tower-images" id="towerImages"></div>
+        </div>
+
+        <div class="summary">
+            <ul id="summaryList">
+                <!-- This will be populated dynamically using JavaScript -->
+            </ul>
+            <p>Total: <span id="totalCost">0</span>€</p>
         </div>
     </div>
 
-    <script src="js/script.js"></script>
+    <script>
+        // Dynamically get the material from the URL
+        const material = "<?= $selectedMaterial ?>";
+        const floors = JSON.parse(localStorage.getItem('floors')) || [];
+        const totalCost = localStorage.getItem('totalCost') || 0;
+
+        // Render the tower images based on the material and floors
+        const towerImages = document.getElementById('towerImages');
+        floors.forEach(floor => {
+            const floorImage = document.createElement('div');
+            floorImage.classList.add('floor-image');
+            floorImage.style.backgroundImage = `url(images/${material}/${floor.room}.png)`;
+            towerImages.appendChild(floorImage);
+        });
+
+        // Update the total cost in the final summary
+        document.getElementById('totalCost').textContent = totalCost;
+    </script>
 </body>
 </html>
