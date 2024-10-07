@@ -1,0 +1,268 @@
+/* Variables */
+:root {
+    --primary-color: #ff6347;
+    --secondary-color: #2ecc71;
+    --background-color: #f7f7f7;
+    --text-color: #333;
+    --font-family: 'Arial', sans-serif;
+    --button-padding: 10px 20px;
+    --button-border-radius: 5px;
+}
+
+/* Global Styles */
+body {
+    font-family: var(--font-family);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+h1, h2, h3 {
+    color: var(--primary-color);
+}
+
+a {
+    text-decoration: none;
+    color: var(--primary-color);
+}
+
+img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Header Styles */
+header {
+    background-color: var(--primary-color);
+    padding: 15px 20px;
+    text-align: center;
+}
+
+header nav a {
+    color: white;
+    margin: 0 15px;
+    font-size: 18px;
+}
+
+header nav a:hover {
+    color: var(--secondary-color);
+}
+
+/* Footer Styles */
+footer {
+    background-color: var(--primary-color);
+    color: white;
+    text-align: center;
+    padding: 15px;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+}
+
+/* Hero Section */
+.hero {
+    background-image: url('../images/spices-background.jpg'); /* Change this to your actual image */
+    background-size: cover;
+    padding: 100px 20px;
+    text-align: center;
+    color: white;
+}
+
+.hero .hero-content h1 {
+    font-size: 3rem;
+}
+
+.hero .hero-content p {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+}
+
+.hero .cta-buttons .btn-primary,
+.hero .cta-buttons .btn-secondary {
+    padding: var(--button-padding);
+    border-radius: var(--button-border-radius);
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.hero .cta-buttons .btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.hero .cta-buttons .btn-primary:hover {
+    background-color: darken(var(--primary-color), 10%);
+}
+
+.hero .cta-buttons .btn-secondary {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.hero .cta-buttons .btn-secondary:hover {
+    background-color: darken(var(--secondary-color), 10%);
+}
+
+/* Product Grid Styles */
+.products-grid, .grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 20px;
+    padding: 20px;
+}
+
+.product-card {
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    text-align: center;
+    padding: 15px;
+}
+
+.product-card img {
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+}
+
+.product-card h3 {
+    margin: 10px 0;
+    font-size: 1.2rem;
+}
+
+.product-card p {
+    font-size: 1rem;
+    margin: 10px 0;
+}
+
+.product-card .btn-add-to-cart {
+    padding: var(--button-padding);
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--button-border-radius);
+    cursor: pointer;
+}
+
+.product-card .btn-add-to-cart:hover {
+    background-color: darken(var(--primary-color), 10%);
+}
+
+/* Cart Styles */
+.cart {
+    padding: 40px;
+    text-align: center;
+}
+
+.cart .cart-items {
+    list-style: none;
+    padding: 0;
+}
+
+.cart .cart-items li {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.cart .btn-primary {
+    padding: var(--button-padding);
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--button-border-radius);
+    cursor: pointer;
+}
+
+.cart .btn-primary:hover {
+    background-color: darken(var(--primary-color), 10%);
+}
+
+/* Form Styles */
+form {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+}
+
+form .form-group {
+    margin-bottom: 20px;
+}
+
+form .form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+form .form-group input[type="text"],
+form .form-group input[type="email"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+form .form-group input[type="range"] {
+    width: 100%;
+}
+
+form .btn-primary {
+    padding: var(--button-padding);
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--button-border-radius);
+    cursor: pointer;
+}
+
+form .btn-primary:hover {
+    background-color: darken(var(--primary-color), 10%);
+}
+
+/* Create Blend Page */
+.create-blend .spice-selection {
+    margin-bottom: 20px;
+}
+
+.create-blend label {
+    display: inline-block;
+    width: 100px;
+}
+
+.create-blend select, .create-blend input {
+    margin-bottom: 10px;
+    width: 50%;
+}
+
+.create-blend .btn-create-blend {
+    padding: var(--button-padding);
+    background-color: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--button-border-radius);
+    cursor: pointer;
+}
+
+.create-blend .btn-create-blend:hover {
+    background-color: darken(var(--primary-color), 10%);
+}
+
+/* Confirmation and Checkout Pages */
+.confirmation, .checkout {
+    padding: 40px;
+    text-align: center;
+}
+
+.confirmation p {
+    font-size: 1.2rem;
+}
+
+.checkout form {
+    margin-top: 20px;
+}
