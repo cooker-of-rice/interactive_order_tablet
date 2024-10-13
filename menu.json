@@ -1,0 +1,9 @@
+[
+  { "id": 1, "name": "Pancakes", "category": "morning", "price": 5.99, "img": "pancakes.jpg" },
+  { "id": 2, "name": "Egg Sandwich", "category": "morning", "price": 4.99, "img": "egg_sandwich.jpg" },
+  { "id": 3, "name": "Cheeseburger", "category": "burgers", "price": 6.99, "img": "cheeseburger.jpg" },
+  { "id": 4, "name": "Veggie Burger", "category": "burgers", "price": 7.99, "img": "veggie_burger.jpg" },
+  { "id": 5, "name": "Coca Cola", "category": "drinks", "price": 1.99, "img": "coca_cola.jpg" },
+  { "id": 6, "name": "Ice Cream", "category": "desserts", "price": 3.99, "img": "ice_cream.jpg" },
+  { "id": 7, "name": "Fries", "category": "sides", "price": 2.99, "img": "fries.jpg" }
+]

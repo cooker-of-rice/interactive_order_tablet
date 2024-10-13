@@ -3,39 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Kyosk</title>
-    <link rel="stylesheet" href="../assets/css/styles.css"> <!-- Link to compiled CSS -->
+    <title>Checkout - Fast Food Kiosk</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-    <!-- Include Header -->
-    <?php include('../includes/header.php'); ?>
+<div class="container">
+    <header>
+        <h1>Checkout</h1>
+    </header>
 
-    <!-- Checkout Form Section -->
-    <section class="checkout">
-        <h2>Checkout</h2>
-        <form action="confirmation.php" method="POST">
-            <div class="form-group">
-                <label for="name">Full Name:</label>
-                <input type="text" id="name" name="name" required>
-            </div>
+    <div class="checkout">
+        <h2>Your Order</h2>
+        <div id="orderSummary"></div>
 
-            <div class="form-group">
-                <label for="address">Shipping Address:</label>
-                <input type="text" id="address" name="address" required>
-            </div>
+        <h3>Total: $<span id="totalAmount">0.00</span></h3>
+        <button id="placeOrderBtn" class="place-order-btn">Place Order</button>
+    </div>
 
-            <div class="form-group">
-                <label for="email">Email:</label>
-                <input type="email" id="email" name="email" required>
-            </div>
+    <footer>
+        <p>Fast Food Kiosk © 2024</p>
+    </footer>
+</div>
 
-            <button type="submit" class="btn-primary">Place Order</button>
-        </form>
-    </section>
-
-    <!-- Include Footer -->
-    <?php include('../includes/footer.php'); ?>
-
+<script src="script.js"></script>
 </body>
 </html>
