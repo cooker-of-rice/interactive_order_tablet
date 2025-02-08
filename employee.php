@@ -1,5 +1,5 @@
 <?php
-$orders = json_decode(file_get_contents('orders.json'), true)['orders'] ?? [];
+$orders = json_decode(file_get_contents('items.json'), true)['orders'] ?? [];
 ?>
 <!DOCTYPE html>
 <html>
@@ -55,6 +55,23 @@ $orders = json_decode(file_get_contents('orders.json'), true)['orders'] ?? [];
             <?php endforeach; ?>
         </div>
     </div>
+
+    <script>
+        function completeOrder(orderId) {
+            fetch('complete_order.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ orderId })
+            })
+            .then(response => {
+                if (response.ok) {
+                    location.reload();
+                }
+            });
+        }
+    </script>
 </body>
 </html>
 
@@ -64,27 +81,21 @@ function time_elapsed_string($datetime) {
     $ago = new DateTime($datetime);
     $diff = $now->diff($ago);
 
-    $diff->w = floor($diff->d / 7);
-    $diff->d -= $diff->w * 7;
+    // Calculate weeks and remaining days separately
+    $weeks = floor($diff->d / 7);
+    $days = $diff->d % 7;
 
     $string = array(
-        'y' => 'year',
-        'm' => 'month',
-        'w' => 'week',
-        'd' => 'day',
-        'h' => 'hour',
-        'i' => 'minute',
-        's' => 'second',
+        'y' => $diff->y > 0 ? $diff->y . ' year' . ($diff->y > 1 ? 's' : '') : null,
+        'm' => $diff->m > 0 ? $diff->m . ' month' . ($diff->m > 1 ? 's' : '') : null,
+        'w' => $weeks > 0 ? $weeks . ' week' . ($weeks > 1 ? 's' : '') : null,
+        'd' => $days > 0 ? $days . ' day' . ($days > 1 ? 's' : '') : null,
+        'h' => $diff->h > 0 ? $diff->h . ' hour' . ($diff->h > 1 ? 's' : '') : null,
+        'i' => $diff->i > 0 ? $diff->i . ' minute' . ($diff->i > 1 ? 's' : '') : null,
+        's' => $diff->s > 0 ? $diff->s . ' second' . ($diff->s > 1 ? 's' : '') : null,
     );
-    
-    foreach ($string as $k => &$v) {
-        if ($diff->$k) {
-            $v = $diff->$k . ' ' . $v . ($diff->$k > 1 ? 's' : '');
-        } else {
-            unset($string[$k]);
-        }
-    }
-    
+
+    $string = array_filter($string);
     return $string ? implode(', ', $string) . ' ago' : 'just now';
 }
 ?>
