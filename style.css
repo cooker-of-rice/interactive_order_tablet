@@ -1,14 +1,29 @@
+/* Enhanced Modern Style for Touchscreen Kiosk */
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
 :root {
-    --primary-color: #2c3e50;
+    --primary-color: #34495e;
     --secondary-color: #e74c3c;
     --accent-color: #27ae60;
+    --background-color: #f4f6f8;
+    --card-background: #ffffff;
+    --button-background: var(--secondary-color);
+    --button-color: #ffffff;
+    --active-tab-bg: var(--primary-color);
+    --active-tab-color: #ffffff;
+}
+
+* {
+    box-sizing: border-box;
 }
 
 body {
-    font-family: 'Segoe UI', system-ui, sans-serif;
+    font-family: 'Roboto', sans-serif;
     margin: 0;
     padding: 0;
-    background: #f8f9fa;
+    background: var(--background-color);
+    -webkit-tap-highlight-color: transparent;
 }
 
 .kiosk-ui {
@@ -17,18 +32,20 @@ body {
     height: 100vh;
     max-width: 768px;
     margin: 0 auto;
-    background: white;
-    box-shadow: 0 0 20px rgba(0,0,0,0.1);
+    background: var(--card-background);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
 
 .header {
     background: var(--primary-color);
-    color: white;
-    padding: 1.5rem;
+    color: var(--button-color);
+    padding: 2rem;
     text-align: center;
     position: sticky;
     top: 0;
     z-index: 100;
+    font-size: 1.75rem;
+    font-weight: 500;
 }
 
 .category-tabs {
@@ -37,21 +54,27 @@ body {
     padding: 1rem;
     background: #ecf0f1;
     overflow-x: auto;
+    position: sticky;
+    top: 100px;
+    z-index: 50;
 }
 
 .category-tab {
-    padding: 0.75rem 1.5rem;
+    flex: none;
+    padding: 1rem 2rem;
     border-radius: 25px;
-    background: white;
+    background: #ffffff;
     border: 2px solid var(--primary-color);
     color: var(--primary-color);
+    font-size: 1.1rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background 0.2s, color 0.2s;
+    user-select: none;
 }
 
 .category-tab.active {
-    background: var(--primary-color);
-    color: white;
+    background: var(--active-tab-bg);
+    color: var(--active-tab-color);
 }
 
 .items-grid {
@@ -64,31 +87,57 @@ body {
 }
 
 .item-card {
-    background: white;
+    background: var(--card-background);
     border-radius: 12px;
     padding: 1rem;
     text-align: center;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    transition: transform 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     border: 1px solid #eee;
-}
-
-.item-card:hover {
-    transform: translateY(-2px);
 }
 
 .item-image {
     width: 100%;
-    height: 120px;
+    height: 140px;
     object-fit: cover;
     border-radius: 8px;
     margin-bottom: 0.5rem;
 }
 
-.cart-footer {
-    background: white;
+.item-card h3 {
+    margin: 0.5rem 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+}
+
+.item-card p {
+    margin: 0.3rem 0;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.btn {
+    display: block;
+    width: 100%;
     padding: 1rem;
-    box-shadow: 0 -4px 6px rgba(0,0,0,0.05);
+    border: none;
+    border-radius: 6px;
+    background: var(--button-background);
+    color: var(--button-color);
+    font-size: 1.2rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 0.5rem;
+}
+
+.btn:active {
+    background: #c0392b;
+}
+
+.cart-footer {
+    background: var(--card-background);
+    padding: 1rem;
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1);
     position: sticky;
     bottom: 0;
 }
@@ -97,13 +146,13 @@ body {
     display: flex;
     align-items: center;
     gap: 1rem;
-    padding: 0.5rem 0;
+    padding: 1rem 0;
     border-bottom: 1px solid #eee;
 }
 
 .cart-item-image {
-    width: 50px;
-    height: 50px;
+    width: 60px;
+    height: 60px;
     object-fit: cover;
     border-radius: 4px;
 }
@@ -112,37 +161,47 @@ body {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin: 0.5rem 0;
 }
 
-.btn {
+.quantity-controls button {
     padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 6px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: #fff;
+    font-size: 1.2rem;
     cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.btn-primary {
-    background: var(--secondary-color);
-    color: white;
-}
-
-.btn-primary:hover {
-    background: #c0392b;
+    user-select: none;
 }
 
 .order-status {
     padding: 0.5rem 1rem;
     border-radius: 20px;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    font-weight: 500;
 }
 
 .status-pending {
-    background: #f1c40f22;
-    color: #f1c40f;
+    background: rgba(231, 76, 60, 0.15);
+    color: var(--secondary-color);
 }
 
 .status-completed {
-    background: #27ae6022;
-    color: #27ae60;
+    background: rgba(39, 174, 96, 0.15);
+    color: var(--accent-color);
+}
+
+.order-card {
+    background: var(--card-background);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.order-item {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 0;
 }

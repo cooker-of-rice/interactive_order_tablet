@@ -11,7 +11,7 @@ $menu = json_decode(file_get_contents('items.json'), true);
 <body>
     <div class="kiosk-ui">
         <div class="header">
-            <h1>🍔 Burger Palace</h1>
+            <h1>Burger Palace</h1>
             <p>Order your favorite meals</p>
         </div>
         
