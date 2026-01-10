@@ -1,0 +1,11 @@
+body {
+    background-color: rgba(0, 0, 0, 0.838);
+    margin:auto
+}
+
+#title_screen{
+   color: aquamarine; 
+   margin-top: 30%;
+   margin-left: 0%;
+   text-align: center;
+}
