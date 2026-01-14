@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DreamHouse Configurator Ultra</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2d3436;
+            --accent: #3498db;
+            --accent-hover: #2980b9;
+            --glass: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.5);
+            --soil-dark: #3e2723;
+            --soil-light: #5d4037;
+            --concrete-dark: #7f8c8d; /* Nová barva pro beton pod zemí */
+            --concrete-light: #95a5a6;
+            --shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0; padding: 0;
+            background: linear-gradient(to bottom, #87CEEB 0%, #E0F7FA 60%, #fff 100%);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            user-select: none;
+            color: var(--primary);
+        }
+
+        /* --- UI PRVKY (GLASSMORPHISM) --- */
+        .glass-panel {
+            background: var(--glass);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+        }
+
+        .btn {
+            border: none; padding: 1rem 2rem; border-radius: 16px;
+            font-weight: 700; font-size: 1rem; cursor: pointer;
+            transition: all 0.2s; text-transform: uppercase; letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        .btn:active { transform: scale(0.96); }
+        .btn-primary { background: linear-gradient(135deg, #3498db, #2980b9); color: white; }
+        .btn-secondary { background: white; color: var(--primary); border: 2px solid #dfe6e9; }
+        .btn-back { padding: 0.8rem 1.5rem; background: rgba(255,255,255,0.6); color: var(--primary); font-weight: 600; }
+
+        input, select {
+            width: 100%; padding: 14px; border-radius: 12px; border: 2px solid rgba(0,0,0,0.1);
+            background: rgba(255,255,255,0.9); font-size: 1rem; font-family: inherit;
+            box-sizing: border-box; transition: 0.3s;
+        }
+        input:focus, select:focus { outline: none; border-color: var(--accent); background: white; }
+
+        /* --- STRÁNKY --- */
+        .page { display: none; height: 100%; flex-direction: column; position: relative; z-index: 10; animation: fadeIn 0.4s ease-out; }
+        .page.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- PAGE 1: INTRO --- */
+        #intro-page { justify-content: center; align-items: center; text-align: center; }
+        #intro-page h1 { font-size: 4rem; margin: 0; background: -webkit-linear-gradient(#2980b9, #2ecc71); -webkit-background-clip: text; -webkit-text-fill-color: transparent; filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1)); }
+
+        /* --- PAGE 2: CONFIG --- */
+        .config-container { display: flex; height: 100%; padding: 2rem; gap: 2rem; box-sizing: border-box; }
+        .sidebar { flex: 1; min-width: 350px; display: flex; flex-direction: column; gap: 1.5rem; overflow-y: auto; padding: 2rem; }
+        .main-form { flex: 2; overflow-y: auto; padding: 2rem; display: flex; flex-direction: column; gap: 1rem; }
+
+        .floor-input-card {
+            background: white; border-radius: 16px; padding: 1.2rem; display: flex; align-items: center; gap: 1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03); border-left: 6px solid #b2bec3; transition: 0.2s;
+        }
+        .floor-input-card:hover { transform: translateX(5px); border-left-color: var(--accent); }
+        .floor-input-card.underground { background: #f4f6f8; border-left-color: #636e72; }
+
+        /* --- PAGE 3: PREVIEW (Visuals) --- */
+        #preview-page { background: transparent; } /* Pozadí řeší body */
+        
+        .top-bar {
+            position: absolute; top: 0; left: 0; right: 0; height: 90px;
+            padding: 0 2rem; display: flex; justify-content: space-between; align-items: center;
+            z-index: 100; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .visualization-viewport {
+            flex: 1; width: 100%; height: 100%; overflow-y: auto; overflow-x: hidden;
+            display: flex; flex-direction: column; align-items: center;
+            padding-top: 120px; /* Space for header */
+            position: relative;
+        }
+
+        /* --- DŮM - GRAFIKA --- */
+        .house-wrapper {
+            width: 500px; display: flex; flex-direction: column; align-items: center; position: relative;
+            margin-bottom: 100px; /* Space at bottom */
+        }
+
+        /* Střecha */
+        .roof-visual { width: 0; height: 0; z-index: 5; position: relative; filter: drop-shadow(0 10px 15px rgba(0,0,0,0.2)); transition: all 0.5s; }
+        .roof-sedlova { 
+            border-left: 280px solid transparent; border-right: 280px solid transparent; 
+            border-bottom: 140px solid #e74c3c;
+        }
+        .roof-sedlova::after { /* Textura tašek */
+            content: ''; position: absolute; top: 5px; left: -260px; width: 520px; height: 135px;
+            background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0,0,0,0.05) 10px, rgba(0,0,0,0.05) 12px);
+            clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+        }
+        .roof-plocha { width: 540px; height: 30px; background: #2d3436; border-radius: 4px; border:none; }
+
+        /* Patro (Obecné) */
+        .floor-block {
+            width: 500px; height: 140px; background: #fff;
+            border-left: 8px solid #2d3436; border-right: 8px solid #2d3436;
+            display: flex; position: relative;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.05);
+            animation: slideDown 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            opacity: 0; transform: translateY(-50px);
+        }
+
+        /* Materiály zdí (nadzemní) */
+        .mat-cihla { border-color: #d35400; }
+        .mat-drevo { border-color: #8d6e63; }
+        .mat-beton { border-color: #95a5a6; }
+
+        /* --- PODZEMNÍ PATRO (BETONOVÁ VANA) - ÚPRAVA BARVY --- */
+        .floor-block.underground {
+            /* Změna barvy okrajů z hnědé na betonově šedou */
+            border-left: 20px solid var(--concrete-dark); 
+            border-right: 20px solid var(--concrete-dark);
+            background: #ecf0f1; /* Vnitřek zůstává světle šedý */
+            box-shadow: inset 0 0 40px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        /* Úprava textury v postranních zdech na šedou */
+        .floor-block.underground::before {
+            content:''; position: absolute; left: -20px; top:0; bottom:0; width: 20px; 
+            background: repeating-linear-gradient(45deg, #607d8b, #607d8b 5px, var(--concrete-dark) 5px, var(--concrete-dark) 10px);
+        }
+        .floor-block.underground::after {
+            content:''; position: absolute; right: -20px; top:0; bottom:0; width: 20px; 
+            background: repeating-linear-gradient(-45deg, #607d8b, #607d8b 5px, var(--concrete-dark) 5px, var(--concrete-dark) 10px);
+        }
+        /* --------------------------------------------------------- */
+
+
+        /* Interiér */
+        .room-visual { flex: 3; position: relative; display: flex; align-items: flex-end; justify-content: center; border-bottom: 6px solid #2d3436; overflow: hidden; }
+        
+        /* Pozadí místnosti (tapeta) */
+        .room-visual.wallpaper { background-image: radial-gradient(#bdc3c7 10%, transparent 10%); background-size: 20px 20px; }
+
+        /* Okno */
+        .window-frame {
+            position: absolute; top: 20px; left: 40px; width: 100px; height: 70px;
+            background: #81ecec; border: 4px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .window-frame::after { content:''; position:absolute; top:0; bottom:0; left:50%; width:4px; background:white; } /* Dělení okna */
+        .window-frame::before { content:''; position:absolute; top:0; bottom:0; left:0; right:0; background: linear-gradient(135deg, rgba(255,255,255,0.4) 0%, transparent 50%); } /* Odlesk */
+
+        /* Šachta (Schody/Výtah) */
+        .shaft-visual {
+            flex: 1; background: #dfe6e9; border-left: 4px solid #b2bec3; border-bottom: 6px solid #2d3436;
+            position: relative; display: flex; align-items: center; justify-content: center;
+        }
+
+        /* Schody Vzor */
+        .stairs-pattern { width: 100%; height: 100%; background: repeating-linear-gradient(135deg, transparent, transparent 10px, #b2bec3 10px, #b2bec3 12px); opacity: 0.6; }
+        
+        /* Výtah Kabina */
+        .elevator-car { width: 70%; height: 80%; background: var(--accent); border: 2px solid #2980b9; border-radius: 4px; box-shadow: 0 0 10px rgba(0,0,0,0.2); }
+
+        /* ZEMĚ (Hlína) */
+        .soil-layer {
+            position: absolute; top: 0; left: -100vw; width: 300vw; height: 2000px;
+            background-color: var(--soil-dark);
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0IiBoZWlnaHQ9IjQiPgo8cmVjdCB3aWR0aD0iNCIgaGVpZ2h0PSI0IiBmaWxsPSIjM2UyNzIzIi8+CjxyZWN0IHdpZHRoPSIxIiBoZWlnaHQ9IjEiIGZpbGw9IiM0ZTM0MmUiLz4KPC9zdmc+'); /* Jemný šum */
+            z-index: -1;
+            border-top: 15px solid #2ecc71; /* Tráva */
+            box-shadow: inset 0 20px 50px rgba(0,0,0,0.5);
+            transform: translateY(-10px); /* Překryv spodku přízemí */
+        }
+
+        /* NÁBYTEK (CSS Shapes) */
+        .furn { position: relative; z-index: 2; margin-bottom: 2px; }
+        
+        /* Gauč */
+        .furn-sofa { width: 120px; height: 40px; background: #e17055; border-radius: 10px 10px 0 0; box-shadow: 2px 2px 5px rgba(0,0,0,0.2); }
+        .furn-sofa::before { content:''; position:absolute; bottom:5px; left:10px; width:40px; height:30px; background:rgba(0,0,0,0.1); border-radius:4px; } /* Polštář */
+        
+        /* Postel */
+        .furn-bed { width: 130px; height: 35px; background: #0984e3; border-radius: 6px; margin-left: 10px; }
+        .furn-bed::after { content:''; position:absolute; top:-10px; left:5px; width:30px; height:20px; background:white; border-radius:50%; box-shadow: 0 2px 2px rgba(0,0,0,0.1); } /* Polštář */
+
+        /* Garáž */
+        .furn-car { width: 150px; height: 50px; background: #d63031; border-radius: 20px 30px 0 0; position:relative; }
+        .furn-car::before, .furn-car::after { content:''; position:absolute; bottom:-8px; width:26px; height:26px; background:#2d3436; border-radius:50%; border:3px solid #b2bec3; }
+        .furn-car::before { left: 20px; } .furn-car::after { right: 30px; }
+
+        /* Garážová vrata */
+        .garage-door { position: absolute; top:10px; left:10px; width:100px; height:80px; background: repeating-linear-gradient(to bottom, #bdc3c7, #bdc3c7 10px, #95a5a6 10px, #95a5a6 11px); border: 2px solid #7f8c8d; }
+
+        /* Sklep regál */
+        .furn-shelf { width: 100px; height: 80px; border: 4px solid #7f8c8d; border-bottom:0; display:flex; flex-direction:column; justify-content:space-evenly; }
+        .furn-shelf div { height:4px; background:#7f8c8d; width:100%; }
+
+        /* --- Prostředí --- */
+        .sun { position: absolute; top: 40px; right: 40px; width: 80px; height: 80px; background: #f1c40f; border-radius: 50%; box-shadow: 0 0 40px #f1c40f; animation: sunPulse 4s infinite alternate; }
+        .cloud { position: absolute; background: white; border-radius: 50px; opacity: 0.8; animation: float 30s linear infinite; filter: blur(5px);}
+
+        @keyframes slideDown { to { opacity: 1; transform: translateY(0); } }
+        @keyframes sunPulse { from { box-shadow: 0 0 20px #f1c40f; transform: scale(1); } to { box-shadow: 0 0 60px #f39c12; transform: scale(1.1); } }
+        @keyframes float { from { transform: translateX(-200px); } to { transform: translateX(120vw); } }
+
+    </style>
+</head>
+<body>
+
+    <div id="intro-page" class="page active">
+        <div class="sun"></div>
+        <div class="cloud" style="width:200px; height:60px; top:100px; left:10%;"></div>
+        <div class="cloud" style="width:150px; height:50px; top:200px; left:70%; animation-duration: 40s;"></div>
+
+        <div class="glass-panel" style="padding: 4rem; max-width: 600px; margin-bottom:50px;">
+            <h1>DreamHouse</h1>
+            <p style="font-size: 1.5rem; opacity: 0.8; margin-bottom: 2rem;">Váš dům. Váš design. Hned teď.</p>
+            <button class="btn btn-primary" style="font-size: 1.5rem; padding: 1.5rem 4rem;" onclick="goToPage('config-page'); renderInputs();">
+                ZAČÍT KONFIGURACI
+            </button>
+        </div>
+    </div>
+
+    <div id="config-page" class="page">
+        <div class="config-container">
+            <div class="sidebar glass-panel">
+                <h2 style="margin-top:0;">Parametry stavby</h2>
+                
+                <label>Materiál (Nadzemní)</label>
+                <select id="material">
+                    <option value="mat-cihla">Cihla (Porotherm)</option>
+                    <option value="mat-drevo">Dřevostavba</option>
+                    <option value="mat-beton">Pohledový beton</option>
+                </select>
+
+                <label style="margin-top:1rem;">Střecha</label>
+                <div style="display:flex; gap:0.5rem;">
+                    <button class="btn btn-secondary" style="flex:1;" onclick="setRoof('sedlova', this)" id="btn-roof-sedlova">Sedlová</button>
+                    <button class="btn btn-secondary" style="flex:1;" onclick="setRoof('plocha', this)">Plochá</button>
+                    <input type="hidden" id="roof-val" value="sedlova">
+                </div>
+
+                <label style="margin-top:1rem;">Doprava</label>
+                <select id="transport">
+                    <option value="schody">Schodiště</option>
+                    <option value="vytah">Výtah (+350k)</option>
+                </select>
+
+                <hr style="width:100%; border:0; border-top:1px solid #ddd; margin: 1.5rem 0;">
+
+                <label>Nadzemní patra</label>
+                <input type="number" id="floors-up" value="2" min="1" max="6" onchange="renderInputs()">
+
+                <label style="margin-top:1rem;">Podzemní patra</label>
+                <input type="number" id="floors-down" value="1" min="0" max="3" onchange="renderInputs()">
+                
+                <div style="margin-top:auto;">
+                    <button class="btn btn-primary" style="width:100%;" onclick="buildHouse()">ZOBRAZIT NÁVRH</button>
+                </div>
+            </div>
+
+            <div class="main-form glass-panel">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <h2 style="margin:0;">Detailní rozvržení</h2>
+                    <button class="btn btn-back" onclick="goToPage('intro-page')">Zpět</button>
+                </div>
+                <div id="floors-container">
+                    </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="preview-page" class="page">
+        <div class="sun"></div>
+        <div class="cloud" style="width:180px; height:60px; top:80px; left:20%;"></div>
+
+        <div class="top-bar glass-panel">
+            <div>
+                <h2 style="margin:0;">Váš Koncept</h2>
+                <span id="header-stats" style="opacity:0.6; font-size:0.9rem;">Načítám...</span>
+            </div>
+            
+            <div style="text-align:right;">
+                <div style="font-size:0.8rem; text-transform:uppercase; opacity:0.7;">Odhad ceny</div>
+                <div id="total-price" style="font-size:1.8rem; font-weight:900; color:var(--accent);">0 Kč</div>
+            </div>
+
+            <div style="display:flex; gap:1rem;">
+                <button class="btn btn-back" onclick="goToPage('config-page')">UPRAVIT</button>
+                <button class="btn btn-primary" onclick="alert('Odesláno na email!')">VYTISKNOUT</button>
+            </div>
+        </div>
+
+        <div class="visualization-viewport">
+            <div id="house-wrapper" class="house-wrapper">
+                </div>
+        </div>
+    </div>
+
+    <script>
+        // --- LOGIC ---
+        function goToPage(id) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function setRoof(type, btn) {
+            document.getElementById('roof-val').value = type;
+            document.querySelectorAll('#config-page .btn-secondary').forEach(b => b.style.borderColor = '#dfe6e9');
+            document.querySelectorAll('#config-page .btn-secondary').forEach(b => b.style.color = 'var(--primary)');
+            btn.style.borderColor = 'var(--accent)';
+            btn.style.color = 'var(--accent)';
+        }
+
+        function renderInputs() {
+            const container = document.getElementById('floors-container');
+            container.innerHTML = '';
+            
+            let up = parseInt(document.getElementById('floors-up').value) || 1;
+            let down = parseInt(document.getElementById('floors-down').value) || 0;
+            
+            // Generate Up floors (Reversed for correct visual order in form)
+            for(let i=up; i>=1; i--) {
+                container.appendChild(createInputCard(i, false));
+            }
+            if(down > 0) container.appendChild(document.createElement('hr'));
+            // Generate Down floors
+            for(let i=1; i<=down; i++) {
+                container.appendChild(createInputCard(-i, true));
+            }
+        }
+
+        function createInputCard(floorNum, isUnderground) {
+            const div = document.createElement('div');
+            div.className = `floor-input-card ${isUnderground ? 'underground' : ''}`;
+            div.dataset.floor = floorNum;
+
+            const name = isUnderground ? `${floorNum}. Podzemní (Sklep)` : (floorNum===1 ? 'Přízemí (1.NP)' : `${floorNum}. Nadzemní (${floorNum-1}. Patro)`);
+            const canGarage = floorNum === 1 || isUnderground;
+
+            div.innerHTML = `
+                <div style="font-weight:700; width:140px; color:${isUnderground ? '#636e72' : 'var(--primary)'}">${name}</div>
+                <select class="room-select" style="flex:1;">
+                    <option value="obyvak">Obývací pokoj</option>
+                    <option value="loznice" ${floorNum > 1 ? 'selected' : ''}>Ložnice</option>
+                    <option value="kuchyne">Kuchyně</option>
+                    <option value="koupelna">Koupelna</option>
+                    ${canGarage ? '<option value="garaz">Garáž</option>' : ''}
+                    ${isUnderground ? '<option value="sklad" selected>Technická / Sklad</option>' : ''}
+                </select>
+            `;
+            return div;
+        }
+
+        function buildHouse() {
+            const container = document.getElementById('house-wrapper');
+            container.innerHTML = ''; // Clear
+
+            const material = document.getElementById('material').value;
+            const roofType = document.getElementById('roof-val').value;
+            const transport = document.getElementById('transport').value;
+            const inputs = document.querySelectorAll('.floor-input-card');
+            
+            let price = 1500000; // Základ (pozemek/deska)
+            
+            // 1. STŘECHA
+            const roof = document.createElement('div');
+            roof.className = `roof-visual roof-${roofType}`;
+            container.appendChild(roof);
+            price += (roofType === 'sedlova' ? 400000 : 200000);
+
+            // 2. PATRA
+            // Seřadit inputs od nejvyššího po nejnižší číslo
+            const sorted = Array.from(inputs).sort((a,b) => parseInt(b.dataset.floor) - parseInt(a.dataset.floor));
+            
+            let delay = 0;
+
+            sorted.forEach(input => {
+                const num = parseInt(input.dataset.floor);
+                const isUnderground = num < 0;
+                const type = input.querySelector('.room-select').value;
+                
+                // Vytvořit blok patra
+                // Pokud je podzemní, ignorujeme vybraný materiál a použijeme betonový styl
+                const floorMat = isUnderground ? '' : material;
+                const floor = document.createElement('div');
+                floor.className = `floor-block ${floorMat} ${isUnderground ? 'underground' : ''}`;
+                floor.style.animationDelay = `${delay}s`;
+                
+                // ZEMĚ (vložit do prvního podzemního patra)
+                if (isUnderground && !document.querySelector('.soil-rendered')) {
+                    const soil = document.createElement('div');
+                    soil.className = 'soil-layer soil-rendered';
+                    floor.appendChild(soil);
+                }
+
+                // LEVÁ ČÁST (Místnost)
+                const room = document.createElement('div');
+                room.className = 'room-visual';
+                if(!isUnderground && type !== 'garaz') room.classList.add('wallpaper');
+
+                // Okno (pokud není pod zemí nebo garáž)
+                if(!isUnderground && type !== 'garaz') {
+                    room.innerHTML += '<div class="window-frame"></div>';
+                }
+                
+                // Nábytek
+                let furnHTML = '';
+                switch(type) {
+                    case 'obyvak': furnHTML = '<div class="furn furn-sofa"></div><div style="width:10px;"></div><div style="width:60px; height:40px; background:#2d3436; border-radius:4px; margin-bottom:20px;"></div>'; break; // Gauč + TV
+                    case 'loznice': furnHTML = '<div class="furn furn-bed"></div>'; break;
+                    case 'kuchyne': furnHTML = '<div class="furn" style="width:120px; height:70px; background:#f1c40f; border-top:5px solid #d35400;"></div>'; break;
+                    case 'garaz': furnHTML = '<div class="garage-door"></div><div class="furn furn-car"></div>'; break;
+                    case 'sklad': furnHTML = '<div class="furn furn-shelf"><div></div><div></div><div></div></div>'; break;
+                    case 'koupelna': furnHTML = '<div class="furn" style="width:80px; height:40px; background:white; border:2px solid #3498db; border-radius:0 0 20px 20px;"></div>'; break;
+                }
+                room.innerHTML += furnHTML;
+
+                // PRAVÁ ČÁST (Šachta)
+                const shaft = document.createElement('div');
+                shaft.className = 'shaft-visual';
+                
+                if (transport === 'schody') {
+                    shaft.innerHTML = '<div class="stairs-pattern"></div>';
+                    price += 40000;
+                } else {
+                    // Výtah
+                    if(num === 1) shaft.innerHTML = '<div class="elevator-car"></div>'; // Kabina v přízemí
+                    else shaft.innerHTML = '<div style="width:4px; height:100%; background:#bdc3c7;"></div>'; // Lana
+                }
+
+                floor.appendChild(room);
+                floor.appendChild(shaft);
+                container.appendChild(floor);
+                
+                // Kalkulace
+                price += 600000; // Cena patra
+                if(type === 'garaz') price -= 100000; // Garáž je "levnější" než vybavený obývák
+                if(isUnderground) price += 200000; // Výkopové práce jsou drahé
+
+                delay += 0.2;
+            });
+            
+            if(transport === 'vytah') price += 350000;
+
+            // Update UI
+            document.getElementById('total-price').innerText = price.toLocaleString('cs-CZ') + ' Kč';
+            
+            const matName = document.querySelector(`#material option[value="${material}"]`).text;
+            document.getElementById('header-stats').innerText = `${sorted.length} podlaží | ${matName}`;
+            
+            goToPage('preview-page');
+        }
+
+        // Init roof visual state
+        setRoof('sedlova', document.getElementById('btn-roof-sedlova'));
+    </script>
+</body>
+</html>
